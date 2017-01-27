@@ -15,12 +15,8 @@ class SignUpPage extends React.Component {
       }
     };
 
-    this.processForm = this
-      .processForm
-      .bind(this);
-    this.changeUser = this
-      .changeUser
-      .bind(this);
+    this.processForm = this.processForm.bind(this);
+    this.changeUser = this.changeUser.bind(this);
   }
 
   changeUser(event) {
@@ -43,16 +39,22 @@ class SignUpPage extends React.Component {
     xhr.open('post', '/auth/signup');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
+
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
-        this.setState({errors: {}});
-        console.log("This form is valid");
+        this.setState({
+          errors: {}
+        });
+
+        localStorage.setItem('successMessage', xhr.response.message);
+        this.context.router.replace('/login');
+
       } else {
-        const errors = xhr.response.errors
-          ? xhr.response.errors
-          : {};
+        const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;
-        this.setState({errors});
+        this.setState({
+          errors
+        });
       }
     });
     xhr.send(formData);
