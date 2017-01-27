@@ -1,0 +1,10 @@
+{
+    "dbUri": "mongodb://localhost/react_app",
+    //replace later with more secure phrase
+    "jwtSecret": "a secret phrase!!"
+}
+
+/*
+if username and password are needed later on, use format below
+mongodb://username:password@host/database
+*/
