@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
         }
         const userId = decoded.sub;
         return User.findById(userId, (userErr, user) => {
-            if (userERr || !user) {
+            if (userErr || !user) {
                 return res.status(401).end();
             }
             return next();
