@@ -39907,6 +39907,7 @@
 	  function LoginPage(props) {
 	    _classCallCheck(this, LoginPage);
 
+	    //sets initial state of component
 	    var _this = _possibleConstructorReturn(this, (LoginPage.__proto__ || Object.getPrototypeOf(LoginPage)).call(this, props));
 
 	    _this.state = {
@@ -39925,10 +39926,33 @@
 	  _createClass(LoginPage, [{
 	    key: 'processForm',
 	    value: function processForm(event) {
+	      var _this2 = this;
+
 	      event.preventDefault();
 
-	      console.log('email:', this.state.user.email);
-	      console.log('password:', this.state.user.password);
+	      var email = encodeURIComponent(this.state.user.email);
+	      var password = encodeURIComponent(this.state.user.password);
+	      var formData = 'email=' + email + '&password=' + password;
+
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('post', '/auth/login');
+	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      xhr.responseType = 'json';
+	      xhr.addEventListener('load', function () {
+	        if (xhr.status === 200) {
+	          _this2.setState({
+	            errors: {}
+	          });
+	          console.log("Form is valid");
+	        } else {
+	          var errors = xhr.response.errors ? xhr.response.errors : {};
+	          errors.summary = xhr.response.message;
+	          _this2.setState({
+	            errors: errors
+	          });
+	        }
+	      });
+	      xhr.send(formData);
 	    }
 	  }, {
 	    key: 'changeUser',
@@ -42138,18 +42162,35 @@
 	      var user = this.state.user;
 	      user[field] = event.target.value;
 
-	      this.setState({
-	        user: user
-	      });
+	      this.setState({ user: user });
 	    }
 	  }, {
 	    key: 'processForm',
 	    value: function processForm(event) {
+	      var _this2 = this;
+
 	      event.preventDefault();
 
-	      console.log('name:', this.state.user.name);
-	      console.log('email:', this.state.user.email);
-	      console.log('password:', this.state.user.password);
+	      var name = encodeURIComponent(this.state.user.name);
+	      var email = encodeURIComponent(this.state.user.email);
+	      var password = encodeURIComponent(this.state.user.password);
+	      var formData = 'name=' + name + '&email=' + email + '&password=' + password;
+
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('post', '/auth/signup');
+	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      xhr.responseType = 'json';
+	      xhr.addEventListener('load', function () {
+	        if (xhr.status === 200) {
+	          _this2.setState({ errors: {} });
+	          console.log("This form is valid");
+	        } else {
+	          var errors = xhr.response.errors ? xhr.response.errors : {};
+	          errors.summary = xhr.response.message;
+	          _this2.setState({ errors: errors });
+	        }
+	      });
+	      xhr.send(formData);
 	    }
 	  }, {
 	    key: 'render',
@@ -42158,8 +42199,7 @@
 	        onSubmit: this.processForm,
 	        onChange: this.changeUser,
 	        errors: this.state.errors,
-	        user: this.state.user
-	      });
+	        user: this.state.user });
 	    }
 	  }]);
 
